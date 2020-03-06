@@ -35,9 +35,12 @@ public class Main {
         }*/
         
         SketchfabAPI api = new SketchfabAPI();
-        ArrayList categories = api.getCategories(api.getCAT_URL());
         
-        categories.forEach(x->System.out.println(x));
+        ArrayList categories = api.getCategories(api.CAT_URL);
+        //categories.forEach(x->System.out.println(x));
+        
+        ArrayList<Model> models = api.getModels(null, api.MODELS_URL);
+        models.forEach(x->System.out.println(x.toString()));
         
         
     }
