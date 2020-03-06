@@ -5,6 +5,8 @@
  */
 package ferru97.sketchfab.api;
 
+import ferru97.sketchfab.utils.Writer;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,11 +38,20 @@ public class Main {
         
         SketchfabAPI api = new SketchfabAPI();
         
-        ArrayList categories = api.getCategories(api.CAT_URL);
+        File f = Writer.createTable("test_output", Model.getTableColumsHeader());
+        
+        //ArrayList categories = api.getCategories(api.CAT_URL);
         //categories.forEach(x->System.out.println(x));
         
         ArrayList<Model> models = api.getModels(null, api.MODELS_URL);
-        models.forEach(x->System.out.println(x.toString()));
+        Writer.appendRowsTable(f, models.stream());
+        for(int i=0; i<5; i++){
+            models = api.getModels_Next(null);
+            Writer.appendRowsTable(f, models.stream());
+        }
+        
+        
+        
         
         
     }

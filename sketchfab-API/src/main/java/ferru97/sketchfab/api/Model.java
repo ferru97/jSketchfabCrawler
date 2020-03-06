@@ -129,7 +129,13 @@ public class Model {
         return "Model{" + "uid=" + uid + ", url=" + url + ", name=" + name + ", tags=" + tags + ", categories=" + categories + ", date=" + date + ", like_count=" + like_count + ", view_count=" + view_count + ", comment_count=" + comment_count + ", vertex_count=" + vertex_count + ", face_count=" + face_count + ", sound_count=" + sound_count + '}';
     }
     
+    public String getCommasLine(){
+        return uid + "," + url + "," + name + "," + tags + "," + categories + "," + date + "," + like_count + "," + view_count + "," + comment_count + "," + vertex_count + "," + face_count + "," + sound_count;
+    }
     
+    public static String getTableColumsHeader(){
+        return "UID,URL,NAME,TAGS,CATEGORIES,DATE,LIKE_COUNT,VIEW_COUNT,COMMENT_COUNT,VERTEX_COUNT,FACE_COUNT,SOUND_COUNT";
+    }
     
     
 }

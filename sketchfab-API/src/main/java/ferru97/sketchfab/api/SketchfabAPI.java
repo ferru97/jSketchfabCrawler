@@ -5,6 +5,7 @@
  */
 package ferru97.sketchfab.api;
 
+import ferru97.sketchfab.utils.RequestHTTP;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;

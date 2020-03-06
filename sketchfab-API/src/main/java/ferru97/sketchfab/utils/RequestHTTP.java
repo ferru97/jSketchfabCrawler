@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ferru97.sketchfab.api;
+package ferru97.sketchfab.utils;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.*;
@@ -17,8 +17,6 @@ public class RequestHTTP {
     private final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .build();
-    
-    public RequestHTTP(){}
     
     public String getRequest(String url, Map<String,String> params) throws IOException, InterruptedException{
         if(params!=null && params.size() > 0)
