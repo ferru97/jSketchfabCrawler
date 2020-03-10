@@ -13,7 +13,7 @@ public class Writer {
     
     public static void appendRowsTable (File dst, Stream<Model> res) throws FileNotFoundException {
         PrintStream ps = new PrintStream(new FileOutputStream(dst,true));
-        res.forEach(p -> ps.println(p.getCommasLine()));
+        res.forEach(p -> ps.println(p.getTableRecord()));
         ps.close();
     }
     

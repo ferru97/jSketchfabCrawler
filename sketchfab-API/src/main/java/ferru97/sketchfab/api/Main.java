@@ -5,11 +5,13 @@
  */
 package ferru97.sketchfab.api;
 
+import ferru97.sketchfab.utils.SQLDatabase;
 import ferru97.sketchfab.utils.Writer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -43,14 +45,46 @@ public class Main {
         //ArrayList categories = api.getCategories(api.CAT_URL);
         //categories.forEach(x->System.out.println(x));
         
-        ArrayList<Model> models = api.getModels(null, api.MODELS_URL);
+       /* HashMap<String,String> params = new HashMap<>();
+        params.put("sort_by", "-viewCount");
+        ArrayList<Model> models = api.getModels(params, api.MODELS_URL);
         Writer.appendRowsTable(f, models.stream());
         for(int i=0; i<5; i++){
+            System.out.println("Execute i= "+i );
             models = api.getModels_Next(null);
-            Writer.appendRowsTable(f, models.stream());
+            if(models.size()>0){
+               Writer.appendRowsTable(f, models.stream());
+               long wait = (long) (0 + Math.random() * (1 - 0));
+               TimeUnit.MILLISECONDS.sleep(wait);  
+            }else{
+                System.out.println("Fail? = "+i+" next="+api.getNextUrl());
+            }
+        }*/
+        
+      SQLDatabase database = new SQLDatabase("localhost","sketchfab_data" , "root", "", 3308);
+      database.connect();
+      
+      //ArrayList<String> categories = api.getCategories(api.CAT_URL);
+      //categories.forEach(x->database.insertCategory(x));
+      
+      
+        HashMap<String,String> params = new HashMap<>();
+        params.put("sort_by", "-likeCount");
+        ArrayList<Model> models = api.getModels(params, api.MODELS_URL);
+        Writer.appendRowsTable(f, models.stream());
+        for(int i=0; i<3; i++){
+            System.out.println("Execute i= "+i );
+            models = api.getModels_Next(null);
+            if(models.size()>0){
+               models.stream().forEach(m->database.insertModel(m));
+               long wait = (long) (0 + Math.random() * (1 - 0));
+               TimeUnit.MILLISECONDS.sleep(wait);  
+            }else{
+                System.out.println("Fail? = "+i+" next="+api.getNextUrl());
+            }
         }
-        
-        
+      
+      database.closeConnection();
         
         
         

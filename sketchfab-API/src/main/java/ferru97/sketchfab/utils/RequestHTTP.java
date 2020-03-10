@@ -20,8 +20,7 @@ public class RequestHTTP {
     
     public String getRequest(String url, Map<String,String> params) throws IOException, InterruptedException{
         if(params!=null && params.size() > 0)
-            url = url + "/?" + parseParams(params);
-        System.out.println(url);
+            url = url + "?" + parseParams(params);
          
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()

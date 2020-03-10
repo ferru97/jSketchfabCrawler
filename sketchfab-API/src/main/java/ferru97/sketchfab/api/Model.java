@@ -18,6 +18,7 @@ public class Model {
     private String name = null;
     private ArrayList<String> tags = new ArrayList<>();
     private ArrayList<String> categories = new ArrayList<>();
+    private ArrayList<String> comments = new ArrayList<>();
     private String date = null;
     private int like_count = 0;
     private int view_count = 0;
@@ -124,17 +125,54 @@ public class Model {
         this.sound_count = sound_count;
     }
 
-    @Override
-    public String toString() {
-        return "Model{" + "uid=" + uid + ", url=" + url + ", name=" + name + ", tags=" + tags + ", categories=" + categories + ", date=" + date + ", like_count=" + like_count + ", view_count=" + view_count + ", comment_count=" + comment_count + ", vertex_count=" + vertex_count + ", face_count=" + face_count + ", sound_count=" + sound_count + '}';
+    public ArrayList<String> getComments() {
+        return comments;
     }
     
-    public String getCommasLine(){
-        return uid + "," + url + "," + name + "," + tags + "," + categories + "," + date + "," + like_count + "," + view_count + "," + comment_count + "," + vertex_count + "," + face_count + "," + sound_count;
+    public void add_Comment(String comment){
+       this.comments.add(comment);
+    }
+
+    public void setComments(ArrayList<String> comments) {
+        this.comments = comments;
+    }
+    
+    
+
+    @Override
+    public String toString() {
+        //Do not display comments
+        return "Model{" + "uid=" + uid + ", url=" + url + ", name=" + name 
+                + ", tags=" + tags + ", categories=" + categories + ", date=" 
+                + date + ", like_count=" + like_count + ", view_count=" + view_count 
+                + ", comment_count=" + comment_count + ", vertex_count=" + vertex_count 
+                + ", face_count=" + face_count + ", sound_count=" + sound_count + '}';
+    }
+    
+    public String getTableRecord(){
+        StringBuilder encoded_comments = new StringBuilder();
+        encoded_comments.append("\"");
+        comments.stream().forEach(comment->encoded_comments.append(comment.replace("\"", "")+"\n"));
+        encoded_comments.append("\"");
+        
+        StringBuilder encoded_tags = new StringBuilder();
+        tags.stream().forEach(tag->encoded_tags.append(tag+","));
+        if(encoded_tags.length()>0)
+            encoded_tags.deleteCharAt(encoded_tags.length()-1);
+        
+        StringBuilder encoded_cat = new StringBuilder();
+        categories.stream().forEach(category->encoded_cat.append(category+","));
+        if(encoded_cat.length()>0)
+            encoded_cat.deleteCharAt(encoded_cat.length()-1);
+        
+        return "\""+uid+"\";\"" + url + "\";\"" + name + "\";\"" + encoded_tags + "\";\"" 
+                + encoded_cat + "\";\"" + date + "\";\"" + like_count + "\";\"" 
+                + view_count + "\";\"" + comment_count + "\";\"" + vertex_count 
+                + "\";\"" + face_count + "\";\"" + sound_count+"\";"+encoded_comments;
     }
     
     public static String getTableColumsHeader(){
-        return "UID,URL,NAME,TAGS,CATEGORIES,DATE,LIKE_COUNT,VIEW_COUNT,COMMENT_COUNT,VERTEX_COUNT,FACE_COUNT,SOUND_COUNT";
+        return "UID;URL;NAME;TAGS;CATEGORIES;DATE;LIKE_COUNT;VIEW_COUNT;COMMENT_COUNT;VERTEX_COUNT;FACE_COUNT;SOUND_COUNT;COMMENTS";
     }
     
     

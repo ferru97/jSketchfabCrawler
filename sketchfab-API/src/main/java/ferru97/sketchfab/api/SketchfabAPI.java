@@ -8,6 +8,7 @@ package ferru97.sketchfab.api;
 import ferru97.sketchfab.utils.RequestHTTP;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +24,7 @@ public class SketchfabAPI {
     
     public static final String CAT_URL = "https://sketchfab.com/v3/categories";
     public static final String MODELS_URL = "https://sketchfab.com/v3/models";
+    public static final String GET_COMMENTS_URL = "https://sketchfab.com/v3/comments";
     private RequestHTTP request = new RequestHTTP();
     
     private String next_page_url;
@@ -64,30 +66,32 @@ public class SketchfabAPI {
             JSONArray items = new JSONArray(obj.get("results").toString());
             JSONObject item_temp;
             JSONArray temp_array;
-            Model temp_moel;
+            Model temp_model;
             for(int i=0; i<items.length(); i++){
                 item_temp = (JSONObject) items.get(i);
-                temp_moel = new Model();
-                temp_moel.setName(item_temp.get("name").toString());
-                temp_moel.setUrl(item_temp.get("viewerUrl").toString());
-                temp_moel.setUid(item_temp.get("uid").toString());
-                temp_moel.setDate(item_temp.get("publishedAt").toString());
-                temp_moel.setLike_count(Integer.valueOf(item_temp.get("likeCount").toString()));
-                temp_moel.setView_count(Integer.valueOf(item_temp.get("viewCount").toString()));
-                temp_moel.setComment_count(Integer.valueOf(item_temp.get("commentCount").toString()));
-                temp_moel.setVertex_count(Integer.valueOf(item_temp.get("vertexCount").toString()));
-                temp_moel.setFace_count(Integer.valueOf(item_temp.get("faceCount").toString()));
-                temp_moel.setSound_count(Integer.valueOf(item_temp.get("soundCount").toString()));
+                temp_model = new Model();
+                temp_model.setName(item_temp.get("name").toString());
+                temp_model.setUrl(item_temp.get("viewerUrl").toString());
+                temp_model.setUid(item_temp.get("uid").toString());
+                temp_model.setDate(item_temp.get("publishedAt").toString());
+                temp_model.setLike_count(Integer.valueOf(item_temp.get("likeCount").toString()));
+                temp_model.setView_count(Integer.valueOf(item_temp.get("viewCount").toString()));
+                temp_model.setComment_count(Integer.valueOf(item_temp.get("commentCount").toString()));
+                temp_model.setVertex_count(Integer.valueOf(item_temp.get("vertexCount").toString()));
+                temp_model.setFace_count(Integer.valueOf(item_temp.get("faceCount").toString()));
+                temp_model.setSound_count(Integer.valueOf(item_temp.get("soundCount").toString()));
                 
                 temp_array = new JSONArray(item_temp.get("tags").toString());
                 for(int k=0; k<temp_array.length(); k++)
-                    temp_moel.addTag(((JSONObject)temp_array.get(k)).get("slug").toString());
+                    temp_model.addTag(((JSONObject)temp_array.get(k)).get("slug").toString());
                 
                 temp_array = new JSONArray(item_temp.get("categories").toString());
                 for(int k=0; k<temp_array.length(); k++)
-                    temp_moel.addTag(((JSONObject)temp_array.get(k)).get("name").toString());
+                    temp_model.addCategory(((JSONObject)temp_array.get(k)).get("name").toString());
                 
-                models.add(temp_moel);
+                temp_model.setComments(getModelComments(temp_model.getUid()));
+                
+                models.add(temp_model);
             }
             
         } catch (IOException | InterruptedException ex) {
@@ -99,12 +103,40 @@ public class SketchfabAPI {
     }
     
     
+    private ArrayList<String> getModelComments(String model_id){
+        ArrayList<String> comments = new ArrayList<>();
+        HashMap<String,String> params = new HashMap();
+        params.put("model", model_id);
+        
+        try {
+            String res = request.getRequest(GET_COMMENTS_URL, params);
+            JSONObject obj = new JSONObject(res);
+            JSONArray items = new JSONArray(obj.get("results").toString());
+            JSONObject item_temp;
+            for(int i=0; i<items.length(); i++){
+                item_temp = (JSONObject) items.get(i);
+                comments.add(item_temp.get("body").toString());
+            }
+            
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(SketchfabAPI.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }  
+        
+        return comments;
+    }
+    
+    
     public ArrayList<Model> getModels_Next(Map<String,String> params){
        return getModels(params, next_page_url);
     }
 
     public String getMODELS_URL() {
         return MODELS_URL;
+    }
+    
+    public String getNextUrl(){
+        return this.next_page_url;
     }
     
 }
