@@ -42,7 +42,7 @@ public class SketchfabAPI {
                 JSONObject cat_temp;
                 for(int i=0; i<categories.length(); i++){
                     cat_temp = (JSONObject) categories.get(i);
-                    res.add(cat_temp.get("name").toString());
+                    res.add(cat_temp.get("slug").toString()+"/"+cat_temp.get("name").toString());
                 }
                 
             }

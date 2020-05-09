@@ -57,16 +57,16 @@ public class SQLDatabase {
     
     public boolean insertCategory(String cat){
         
+        String[] values = cat.split("/");
         Statement stmt; 
         try {
             if(con.isClosed())
                 connect();
             stmt = con.createStatement();
             // Inserting data in database 
-            String q1 = "insert into categories values('" +cat+ "')"; 
+            String q1 = "insert into categories values('" +values[0]+ "','" +values[1]+ "')"; 
             int x = stmt.executeUpdate(q1); 
             if (x > 0){
-                System.out.println("Catgory Inserted");  
                 return true;
             }                            
             else{
@@ -75,7 +75,7 @@ public class SQLDatabase {
             }            
                     
         } catch (SQLException ex) {
-            System.out.println("SQL Exception: "+ex.toString());
+            //System.out.println("SQL Exception: "+ex.toString());
             return false;
         }
     }
@@ -147,6 +147,7 @@ public class SQLDatabase {
             }            
                     
         } catch (SQLException ex) {
+            //System.out.println("SQL Exception: "+ex.toString());
             return false;
         }
     }

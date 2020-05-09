@@ -5,17 +5,13 @@
  */
 package ferru97.sketchfab.api;
 
-import ferru97.sketchfab.utils.FritzTR064;
 import ferru97.sketchfab.utils.SQLDatabase;
-import ferru97.sketchfab.utils.Writer;
 import java.awt.Toolkit;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  *
@@ -24,23 +20,43 @@ import org.json.JSONObject;
 public class Main {
     
     public static void main(String[] args) throws IOException, InterruptedException{
-      System.out.println("jSketchfabCrawler start");
-       
-      SketchfabAPI api = new SketchfabAPI();
+        String db_host,db_name,db_user,db_psw;
+        int db_port;
+        if(args.length!=1 || args[0].split("/").length!=5){
+            System.out.println("Invalid arguments: provide the database credential "
+                    + "in the following format: 'db_address/db_name/db_user/db_password/db_port'");
+            return;
+        }else{
+            String[] params = args[0].split("/");
+            db_host = params[0];
+            db_name = params[1];
+            db_user = params[2];
+            db_psw = params[3];
+            db_port = Integer.parseInt(params[4]);         
+        }  
+
+        System.out.println("jSketchfabCrawler start");
+
+        SketchfabAPI api = new SketchfabAPI();
+        ArrayList<String> categories = api.getCategories(SketchfabAPI.GET_CATEGOTIES_API_URL);
         
-      SQLDatabase database = new SQLDatabase("localhost","test_sk" , "root", "", 3308);
-      database.connect();
-      
-        HashMap<String,String> params = new HashMap<>();
-        params.put("sort_by", "viewCount");
-        ArrayList<Model> models = api.getModels(params, SketchfabAPI.GET_MODELS_API_URL);
+        SQLDatabase database = new SQLDatabase(db_host, db_name, db_user, db_psw, db_port);
+        database.connect();
+        categories.forEach(cat->database.insertCategory(cat));
+        
+
+        HashMap<String,String> post_data = new HashMap<>();
+        post_data.put("sort_by", "viewCount");
+        ArrayList<Model> models = api.getModels(post_data, SketchfabAPI.GET_MODELS_API_URL);
+        Date d;
         models.stream().forEach(m->database.insertModel(m));
         for(int i=0; i>-1; i++){
-            System.out.println("Execute i= "+i );
+            d = new Date();
+            System.out.println("Execute request "+i+" - time:"+d.toString() );
             models = api.getModels_Next(null);
             if(models!=null && models.size()>0){
                models.stream().forEach(m->database.insertModel(m));
- 
+
             }else{
                 Toolkit.getDefaultToolkit().beep();
                 TimeUnit.MILLISECONDS.sleep(100);
@@ -50,7 +66,6 @@ public class Main {
                 api.reconnect();
             }
         }
-      
       database.closeConnection();
 
     }
