@@ -22,9 +22,9 @@ import org.json.JSONObject;
 public class SketchfabAPI {
     //API INFO https://docs.sketchfab.com/data-api/v3/index.html
     
-    public static final String CAT_URL = "https://sketchfab.com/v3/categories";
-    public static final String MODELS_URL = "https://sketchfab.com/v3/models";
-    public static final String GET_COMMENTS_URL = "https://sketchfab.com/v3/comments";
+    public static final String GET_CATEGOTIES_API_URL = "https://sketchfab.com/v3/categories";
+    public static final String GET_MODELS_API_URL = "https://sketchfab.com/v3/models";
+    public static final String GET_COMMENTS_API_URL = "https://sketchfab.com/v3/comments";
     private RequestHTTP request = new RequestHTTP();
     
     private String next_page_url;
@@ -57,10 +57,13 @@ public class SketchfabAPI {
     
     public ArrayList<Model> getModels(Map<String,String> params, String api_url){
         ArrayList<Model> models = new ArrayList<>();
+        next_page_url = api_url;
         
         try {
             String res = request.getRequest(api_url, params);
-        
+            if (res == null)
+                return null;
+                
             JSONObject obj = new JSONObject(res);
             next_page_url = obj.get("next").toString();
             JSONArray items = new JSONArray(obj.get("results").toString());
@@ -109,7 +112,9 @@ public class SketchfabAPI {
         params.put("model", model_id);
         
         try {
-            String res = request.getRequest(GET_COMMENTS_URL, params);
+            String res = request.getRequest(GET_COMMENTS_API_URL, params);
+            if(res==null)
+                return comments;
             JSONObject obj = new JSONObject(res);
             JSONArray items = new JSONArray(obj.get("results").toString());
             JSONObject item_temp;
@@ -128,15 +133,19 @@ public class SketchfabAPI {
     
     
     public ArrayList<Model> getModels_Next(Map<String,String> params){
-       return getModels(params, next_page_url);
+       return getModels(null, next_page_url);
     }
 
     public String getMODELS_URL() {
-        return MODELS_URL;
+        return GET_MODELS_API_URL;
     }
     
-    public String getNextUrl(){
+    public String getNextPageUrl(){
         return this.next_page_url;
+    }
+    
+    public void reconnect(){
+        request.reconnect();
     }
     
 }

@@ -1,6 +1,7 @@
 ferru97\sketchfab\api\SketchfabAPI.class
+ferru97\sketchfab\api\Model.class
+ferru97\sketchfab\utils\FritzTR064.class
 ferru97\sketchfab\utils\RequestHTTP.class
 ferru97\sketchfab\utils\SQLDatabase.class
 ferru97\sketchfab\api\Main.class
 ferru97\sketchfab\utils\Writer.class
-ferru97\sketchfab\api\Model.class

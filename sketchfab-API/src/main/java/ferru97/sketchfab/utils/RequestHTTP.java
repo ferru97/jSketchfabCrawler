@@ -14,9 +14,13 @@ import java.util.Map;
  * @author Vito
  */
 public class RequestHTTP {
-    private final HttpClient httpClient = HttpClient.newBuilder()
+    private HttpClient httpClient;
+    
+    public RequestHTTP(){
+        httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .build();
+    }
     
     public String getRequest(String url, Map<String,String> params) throws IOException, InterruptedException{
         if(params!=null && params.size() > 0)
@@ -31,7 +35,7 @@ public class RequestHTTP {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if(response.statusCode() != 200){
-            System.out.println("Request Error: status code="+response.statusCode()+" URL="+url);
+            System.out.println("Request Error: status code="+response.statusCode()+" URL="+url + "data="+response);
             return null;
         }
 
@@ -53,6 +57,13 @@ public class RequestHTTP {
         get_params.deleteCharAt(get_params.length() - 1);
         return get_params.toString();
         
+    }
+    
+    
+    public void reconnect(){
+        httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .build();
     }
     
     

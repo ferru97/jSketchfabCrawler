@@ -147,7 +147,6 @@ public class SQLDatabase {
             }            
                     
         } catch (SQLException ex) {
-            System.out.println("SQL Exception: "+ex.toString()+"\n"+sq1);
             return false;
         }
     }
