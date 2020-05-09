@@ -46,7 +46,7 @@ public class Main {
         
 
         HashMap<String,String> post_data = new HashMap<>();
-        post_data.put("sort_by", "viewCount");
+        post_data.put("sort_by", "-viewCount");
         ArrayList<Model> models = api.getModels(post_data, SketchfabAPI.GET_MODELS_API_URL);
         Date d;
         models.stream().forEach(m->database.insertModel(m));
