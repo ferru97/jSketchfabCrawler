@@ -15,3 +15,7 @@ jSketchfabCrawler is a java for the automatic crawling of model's information fr
 ### How To
 Run the jar file specifying the DB credentials with the following format:
 `java -jar jSketchfabCrawler.jar db_address/db_name/db_user/db_password/db_port`
+
+
+####Note
+This first version only download the data in descending order of views of the models 
