@@ -1,6 +1,6 @@
 # jSketchfabCrawler
 
-jSketchfabCrawler is a java for the automatic crawling of model's information from sketchfab.com using its public API.  The information are related to: 
+jSketchfabCrawler is a java tool for the automatic crawling of model's information from sketchfab.com using its public API.  The information are related to: 
 - Model name
 - Model url
 - Number of views, like, comments, vertices and faces
